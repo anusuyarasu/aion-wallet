@@ -202,12 +202,86 @@
     <!--Jumbotron-->
     <div class="container">
         <div class="jumbotron jumbotron-fluid">
-            <h4><b>Your Account Address:</b><p id="vaddress"></p></h4>
-            <h4><b>Your Balance:</b><p id="vbalance"></p></h4>
-       </div>
+            <h4><b>Your Account Address:</b></h4><h6><p id="vaddress"></p></h6>
+            <h4><b>Your Balance:</b></h4><h6><p id="vbalance"></p></h6>
+            <center><button type="button" class="btn btn-success  btn-rounded z-depth-1" onclick="back();"><B>BACK</B></button></center>
+        </div>
     
     </div>
  </div>
+<div id="accounts">
+    <section class="form-dark">
+
+        <!--Form without header-->
+        <div class="card card-image" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/pricing-table7.jpg'); width: 28rem;">
+            <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+    
+                <!--Header-->
+                <div class="text-center">
+                    <h3 class="white-text mb-5 mt-4 font-weight-bold"><strong>ACCOUNT</strong> <a class="green-text font-weight-bold"><strong>DETAILS</strong></a></h3>
+                </div>
+                <!--Grid row-->
+                <div class="row d-flex align-items-center mb-4">
+    
+                    <!--Grid column-->
+                    <div class="text-center mb-3 col-md-12">
+                        <h4>Address</h4><p id="a"></p>
+                        <button type="button" class="btn btn-success btn-block btn-rounded z-depth-1" onclick="View();">VIEW ACCOUNT DETAILS</button>
+                        <button type="button" class="btn btn-success btn-block btn-rounded z-depth-1" onclick="page();">SEND TRANSACTION</button>
+                    </div>
+                    <!--Grid column-->
+                </div>
+    
+            </div>
+        </div>
+        <!--/Form without header-->
+    
+    </section> 
+</div>
+<div id="send" class="container">
+    <section class="form-dark">
+
+                <!--Form without header-->
+                <div class="card card-image" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/pricing-table7.jpg'); width: 28rem;">
+                    <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+            
+                        <!--Header-->
+                        <div class="text-center">
+                            <h3 class="white-text mb-5 mt-4 font-weight-bold"><strong>ACCOUNT</strong> <a class="green-text font-weight-bold"><strong>DETAILS</strong></a></h3>
+                        </div>
+                        <!--Grid row-->
+                        <div class="row d-flex align-items-center mb-4">
+            
+                            <!--Grid column-->
+                            <div class="text-center mb-3 col-md-12">
+                                <h4>Address</h4><p id="b"></p>
+                               
+                                <div class="md-form mb-4">
+                                       <label for="To Address">To Address</label>
+                                        <select id="la" class="container">
+                                               
+                                        </select>
+                                        <!-- <input type="text" id="to" class="form-control validate">
+                                        <label data-error="wrong" data-success="right" for="defaultForm-pass">To Address</label> -->
+                                </div>
+                                <div class="md-form mb-4">
+                                        <input type="text" id="aion" class="form-control validate">
+                                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Amount</label>
+                                </div>
+                                <button type="button" class="btn btn-success btn-rounded z-depth-1" onclick="back();">BACK</button>
+                                <button type="button" class="btn btn-success btn-rounded z-depth-1" onclick="transaction();">SEND</button>
+                            </div>
+                            <!--Grid column-->
+                        </div>
+            
+                    </div>
+                </div>
+                <!--/Form without header-->
+            
+    </section> 
+
+</div>
+
 </div>
    <!-- SCRIPTS -->
     <!-- JQuery -->
@@ -221,19 +295,24 @@
     <script type="text/javascript" src="js/app/web3.min.js"></script>
     <!-- <script type="text/javascript" src="js/app/app.js"></script> -->
     <script>
-        var web3= new Web3(new Web3.providers.HttpProvider('http://10.10.0.223:8545'));
+        var web3= new Web3(new Web3.providers.HttpProvider('http://18.191.165.67:8545'));
         var arr=[];
        
          $('#form').hide();
          $('#list').hide();
          $('#list_account').hide();
+         $('#accounts').hide();
          $('#view').hide();
+         $('#send').hide();
+         
         function home(){
              $('#home').show();
              $('#form').hide();
              $('#list').hide();
              $('#list_account').hide();
              $('#view').hide();
+             $('#accounts').hide();
+             $('#send').hide();
         }
         function sign(){
             $('#home').hide();
@@ -241,7 +320,8 @@
             $('#list').hide();
             $('#list_account').hide();
             $('#view').hide();
-            //$('#login').show();
+            $('#send').hide();
+            $('#accounts').hide();
         }
         function entry(){
             $('#form').hide();
@@ -249,6 +329,8 @@
             $('#list').hide();
             $('#list_account').hide();
             $('#view').hide();
+            $('#send').hide();
+            $('#accounts').hide();
         }
         function wallet(){
             $('#list').show();
@@ -257,9 +339,30 @@
             $('#home').hide();
             $('#list_account').hide();
             $('#view').hide();
+            $('#send').hide();
+            $('#accounts').hide();
+        }
+        function View(){
+            $('#accounts').hide();
+            $('#view').show();
+            $('#send').hide();
+        }
+        function back(){
+            $('#accounts').show();
+            $('#view').hide();
+            $('#send').hide();
+        }
+        function page(){
+            var a =web3.personal.listAccounts;
+            $('#accounts').hide();
+            $('#send').show();
+            $('#la').html('');
+            for(var i=0; i<a.length; i++){
+         
+                $("#la").append('<option value="'+a[i]+'" id="to" >'+a[i]+'</option>');
+            }   
         }
         function create_account(){
-
             var password1=document.getElementById('value1').value;
             var password2=document.getElementById('value2').value;
             if(password1=="" && password2 == ""){
@@ -289,13 +392,15 @@
             var password = document.getElementById('pass').value;
             var unlock=web3.personal.unlockAccount(account,password);
             if(unlock== true){
-                $('#view').show();
+                $('#accounts').show();
+                $('#view').hide();
                 $('#form').hide();
                 $('#login').hide();
                 alert("your logged in");
                 var b =web3.eth.getBalance(account).shiftedBy(-18).toString();
                 document.getElementById('vaddress').innerHTML= account;
-                document.getElementById('vbalance').innerHTML= b;
+                document.getElementById('b').innerHTML= account;
+                document.getElementById('b').value= account;
                 document.getElementById('address').value="";
                 document.getElementById('pass').value="";
              }
@@ -316,6 +421,8 @@
             var a =web3.personal.listAccounts;
             $('#list_account').show();
             $('#list').hide();
+            $('#accounts').hide();
+            $('#send').hide();
            $('#body_bank').html(''); 
           for(var i=0; i<a.length; i++){
          
@@ -327,12 +434,16 @@
     var password=document.getElementById('pass1').value;
     var unlock=web3.personal.unlockAccount(address,password);
     if(unlock== true){
-        //$('#unlock').hide();
+        $('#accounts').show();
+        $('#unlock').hide();
         $('#list_account').hide();
-        $('#view').show();
+        $('#view').hide();
         alert("your logged in");
         var balance=document.getElementById('address1').value;
-        var b =web3.eth.getBalance(balance).shiftedBy(-18).toString();
+        var b =web3.eth.getBalance(balance).toString();
+        document.getElementById('a').innerHTML= address;
+        document.getElementById('b').innerHTML= address;
+        document.getElementById('b').value= address;
         document.getElementById('vaddress').innerHTML= address;
         document.getElementById('vbalance').innerHTML= b;
         document.getElementById('address1').value="";
@@ -344,6 +455,23 @@
         document.getElementById('pass1').value="";
     }
    } 
+   function transaction(){
+        $('#accounts').hide();
+        var fromaddress=document.getElementById('b').value;
+        var toaddress =document.getElementById('to').value;
+        var amount = document.getElementById('aion').value;
+        console.log(fromaddress);
+        console.log(toaddress);
+        
+        web3.eth.sendTransaction({from:fromaddress,to:toaddress,value:amount},function(err,res){
+            if(err){
+                console.log(err);
+            }
+            else{
+                alert("Transaction Successfully")
+            }
+        })
+   }
     </script>
 </body>
 
